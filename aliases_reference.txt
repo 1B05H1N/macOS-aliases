@@ -1,0 +1,239 @@
+# ================================
+# Professional IT/Security Aliases Reference
+# ================================
+
+# ---- System Monitoring ----
+psg         = ps aux | grep -v grep | grep [search]         # Search for processes by keyword
+cpuuse      = top -o cpu                                    # Show top processes by CPU usage
+memuse      = top -o rsize                                  # Show top processes by memory usage
+
+# diskuse and inodeuse work on macOS, but inodeuse is rarely needed on APFS
+ diskuse     = df -h | grep -v tmpfs                         # Show disk usage (excluding tmpfs)
+inodeuse    = df -i                                         # Show inode usage
+
+uptime      = uptime -p                                     # Pretty uptime
+# journalctl is not available on macOS by default
+# journal     = journalctl -xe                              # Systemd journal (Linux only)
+syslog      = tail -f /var/log/system.log                   # macOS system log
+
+# ---- Security & Forensics ----
+checkports  = sudo lsof -i -n -P | grep LISTEN              # Show listening ports (requires sudo)
+whoamiwho   = whoami; id; groups                            # User info
+# lastb and /var/log/auth.log are Linux-only
+# failedlogins= lastb -n 10                                 # Failed logins (Linux only)
+# authlog     = tail -f /var/log/auth.log                   # Auth log (Linux only)
+fw          = sudo pfctl -sr                                # Show pf firewall rules (macOS)
+hashes      = shasum -a 256                                 # SHA256 hash of a file
+virustotal  = open https://www.virustotal.com/gui/home/upload # Open VirusTotal in browser
+
+# ---- Networking ----
+pingg       = ping 8.8.8.8                                  # Ping Google DNS
+tracer      = traceroute google.com                         # Trace route to Google
+netconns    = netstat -an | grep ESTABLISHED                # Show established network connections
+ifip        = ifconfig | grep "inet " | grep -v 127.0.0.1   # Show local IP addresses
+# digg        = dig +short                                    # Short DNS lookup (requires dig; install with: brew install bind)
+dnsflush    = sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder # Flush DNS cache (macOS)
+
+# ---- File & Audit ----
+bigfiles    = find . -type f -exec du -h {} + | sort -rh | head -n 20 # Largest files in current dir
+recent      = ls -lt | head -n 10                                    # 10 most recent files
+# namei is not available on macOS by default
+# permcheck   = namei -l                                            # Show file permissions (Linux)
+whouses     = lsof | grep [file]                                     # Who uses a file (requires lsof)
+
+# ---- Security Tools ----
+# The following require the tools to be installed
+# nmapquick   = nmap -T4 -F                                   # Fast nmap scan (requires nmap; install with: brew install nmap)
+# ffufx       = ffuf -w ~/wordlists/ -u https://target/FUZZ   # Ffuf scan (requires ffuf; install with: brew install ffuf)
+# gobusterx   = gobuster dir -u https://target -w ~/wordlists/ # Gobuster scan (requires gobuster; install with: brew install gobuster)
+# burp        = open /Applications/BurpSuiteProfessional.app  # Open Burp Suite (manual install from https://portswigger.net/burp)
+
+# ---- Docker / Virtualization ----
+dps         = docker ps                                              # List Docker containers (requires Docker)
+dclean      = docker system prune -f                                 # Clean Docker (DANGEROUS: removes unused data)
+dstopall    = docker stop $(docker ps -q)                            # Stop all Docker containers (DANGEROUS)
+dlogs       = docker logs -f                                         # Follow logs for a Docker container (add container name)
+vboxlist    = VBoxManage list vms                                    # List VirtualBox VMs (requires VirtualBox)
+
+# ---- Git Shortcuts ----
+gs          = git status
+ga          = git add .
+gc          = git commit -m "[msg]"
+gp          = git push
+gl          = git log --oneline --graph --decorate
+gco         = git checkout
+gb          = git branch
+grh         = git reset --hard HEAD                                  # DANGEROUS: resets all changes
+
+# ---- Cleanup ----
+cleanpyc    = find . -name "*.pyc" -delete                          # Delete Python bytecode files
+cleanlogs   = find . -name "*.log" -size +5M -delete                # Delete large log files
+clearcache  = rm -rf ~/Library/Caches/*                              # Clear user cache (macOS, DANGEROUS)
+
+# ---- Convenience ----
+..          = cd ..
+...         = cd ../..
+c           = clear
+home        = cd ~
+desk        = cd ~/Desktop
+myip        = curl ifconfig.me                                       # Show public IP (requires curl)
+mkdircd     = mkdir -p [dir] && cd [dir]                             # Make and cd into directory
+
+# ---- Remote Shortcuts ----
+prod        = echo "🟥 PROD ENV — THINK TWICE"; ssh user@prod-server.com # Warn and SSH to prod
+staging     = ssh user@staging-server.com                            # SSH to staging
+
+# ---- Custom Commands ----
+reset_launchpad = sudo find /private/var/folders/ -type d -name com.apple.dock.launchpad -exec rm -rf {} + 2>/dev/null; killall Dock # Reset Launchpad (macOS)
+
+# ---- Optional Fun & Info ----
+# figlet      = figlet -f slant "Hello!"                     # ASCII art (requires figlet; install with: brew install figlet)
+cheat       = curl cheat.sh                                          # Quick cheatsheets (requires curl)
+wttr        = curl wttr.in                                           # Weather in terminal (requires curl)
+# manp        = man -t [page]                              # Print man page as PDF (use with Preview). Requires man (built-in) and Preview app.
+openman     = man -t [page] | open -f -a Preview         # Open man page in Preview as PDF. Requires man (built-in) and Preview app.
+
+# ---- Alias Reference ----
+aliases     = cat ~/aliases_reference.txt                            # Show this reference
+
+# ---- Extra Safety & Convenience ----
+safegrh      = Prompts before running 'git reset --hard HEAD' (safer than grh)
+reloadaliases= Reloads your aliases file without restarting the shell
+findport     = lsof -iTCP -sTCP:LISTEN -n -P | grep [port/process] # Find process using a port
+myuser       = Prints your username and shell
+lsd          = ls -lhFG (macOS) # Detailed directory listing
+histg        = history | grep [search] # Search your shell history
+path         = Prints your $PATH variable, one entry per line
+
+extract      = Function to extract many archive types (tar, zip, gz, bz2, 7z, etc.)
+
+# ---- Extra macOS Productivity ----
+spinfo      = system_profiler SPHardwareDataType         # Show Mac hardware info. No extra requirements; built-in on macOS.
+osver       = sw_vers                                   # Show macOS version. No extra requirements; built-in on macOS.
+updates     = softwareupdate -l                         # List available macOS updates. Requires sudo for installing updates; built-in on macOS.
+brewup      = brew update && brew upgrade && brew cleanup # Update all Homebrew packages. Requires Homebrew (brew.sh).
+
+finder      = open .                                    # Open current directory in Finder. No extra requirements; built-in on macOS.
+showhidden  = defaults write com.apple.finder AppleShowAllFiles -bool true && killall Finder  # Show hidden files in Finder. No extra requirements; built-in on macOS.
+hidehidden  = defaults write com.apple.finder AppleShowAllFiles -bool false && killall Finder # Hide hidden files in Finder. No extra requirements; built-in on macOS.
+
+wifiinfo    = /System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport -I # Show Wi-Fi info (signal, SSID, etc). No extra requirements; built-in on macOS.
+
+psgrep      = ps aux | grep -i [search]                  # Case-insensitive process search. No extra requirements; built-in on macOS.
+killport    = f(){ lsof -ti :[port] | xargs kill -9; }; f # Kill process on port: killport 8080. Requires lsof (built-in) and xargs (built-in); use with caution.
+topcpu      = ps -A -o %cpu,comm | sort -nr | head -n 10 # Show top 10 CPU-consuming processes. No extra requirements; built-in on macOS.
+
+pbcopyf     = pbcopy < [file]                            # Copy file contents to clipboard: pbcopyf file.txt. Requires pbcopy (built-in on macOS).
+pbpastef    = pbpaste > [file]                           # Paste clipboard to file: pbpastef file.txt. Requires pbpaste (built-in on macOS).
+
+manp        = man -t [page]                              # Print man page as PDF (use with Preview). Requires man (built-in) and Preview app.
+openman     = man -t [page] | open -f -a Preview         # Open man page in Preview as PDF. Requires man (built-in) and Preview app.
+
+..2         = cd ../..                                   # Up two directories. No extra requirements.
+..3         = cd ../../..                                # Up three directories. No extra requirements.
+..4         = cd ../../../..                             # Up four directories. No extra requirements.
+
+uuid        = uuidgen                                    # Generate a UUID. No extra requirements; built-in on macOS.
+iplocal     = ipconfig getifaddr en0                     # Get local IP (Wi-Fi). No extra requirements; built-in on macOS. Use en1 for Ethernet.
+ipall       = ifconfig | grep inet                       # List all IPs. No extra requirements; built-in on macOS.
+
+gatekeeper  = spctl --status                             # Check Gatekeeper status. No extra requirements; built-in on macOS.
+xprotect    = defaults read /System/Library/CoreServices/XProtect.bundle/Contents/Resources/XProtect.meta.plist # View XProtect info. No extra requirements; built-in on macOS.
+
+please      = sudo $(fc -ln -1)                          # Repeat last command with sudo. Requires sudo and a shell that supports 'fc' (zsh, bash).
+hist10      = history | tail -10                         # Show last 10 commands. No extra requirements; built-in on macOS.
+
+brews       = brew list                                  # List installed Homebrew packages. Requires Homebrew.
+brewscask   = brew list --cask                           # List installed Homebrew casks (apps). Requires Homebrew.
+
+# ---- Template/Custom Aliases ----
+myalias      = your command here # Description
+
+# ---- Recommended Tools ----
+# To get the most from these aliases, install: nmap, ffuf, gobuster, VBoxManage, figlet, dig, 7z, unrar, unzip, curl, lsof, docker, git, etc.
+# On macOS, use 'brew install [tool]' for most of these.
+
+# ---- Notes ----
+# - Some aliases require additional tools (nmap, ffuf, gobuster, VBoxManage, figlet, etc.)
+# - Some are commented out as they are Linux-only or not available on macOS by default.
+# - DANGEROUS: dclean, dstopall, grh, clearcache, reset_launchpad can cause data loss or system changes.
+# - Always review and test aliases before using in production environments.
+
+# ---- Classic Bash Productivity Aliases (macOS tailored) ----
+ll        = ls -laG                       # Long listing with color (macOS: -G for color, built-in)
+l.        = ls -d .??*                    # Show hidden files (macOS: no --color, built-in)
+cd..      = cd ..                         # Fix common typo (built-in)
+....      = cd ../../../../               # Up four directories (built-in)
+.....     = cd ../../../../../            # Up five directories (built-in)
+.4        = cd ../../../../               # Up four directories (built-in)
+.5        = cd ../../../../../            # Up five directories (built-in)
+grep      = grep --color=auto             # Colorize grep output (may need GNU grep: brew install grep)
+egrep     = egrep --color=auto            # Colorize egrep output (may need GNU grep)
+fgrep     = fgrep --color=auto            # Colorize fgrep output (may need GNU grep)
+bc        = bc -l                         # Start calculator with math support (built-in)
+sha1      = openssl sha1                  # Generate SHA1 hash (requires openssl, built-in)
+mkdir     = mkdir -pv                     # Create parent directories as needed (built-in)
+# diff    = colordiff                     # Color diff output (requires colordiff; brew install colordiff)
+h         = history                       # Show command history (built-in)
+j         = jobs -l                       # List jobs (built-in)
+path      = echo $PATH | tr ':' '\n'     # Show PATH line by line (built-in)
+now       = date +"%T"                   # Show current time (built-in)
+nowdate   = date +"%d-%m-%Y"              # Show current date (built-in)
+# vi      = vim                           # Set vim as default editor (brew install vim)
+# svi     = sudo vi                       # Sudo vim (brew install vim)
+# vis     = vim "+set si"                # Vim with smart indent (brew install vim)
+# edit    = vim                           # Edit with vim (brew install vim)
+ping      = ping -c 5                     # Ping 5 times by default (built-in)
+ports     = lsof -i -P -n | grep LISTEN   # Show open ports (built-in lsof)
+header    = curl -I                       # Get web server headers (built-in curl)
+headerc   = curl -I --compress            # Check for gzip support (built-in curl)
+rm        = rm -I                         # Prompt before every removal (built-in)
+mv        = mv -i                         # Prompt before overwrite (built-in)
+cp        = cp -i                         # Prompt before overwrite (built-in)
+ln        = ln -i                         # Prompt before overwrite (built-in)
+df        = df -H                         # Human-readable disk free (built-in)
+du        = du -ch                        # Human-readable disk usage (built-in)
+
+# ---- Security / Pentesting Aliases ----
+# nmapS      = nmap -sS -Pn -T4                  # TCP SYN scan, no ping, speed T4 (brew install nmap)
+# nmapFull   = nmap -sC -sV -A -Pn -T4           # Default scripts, version, OS detect, aggressive (brew install nmap)
+# nmapTopPorts = nmap --top-ports 1000 -sV -Pn -T4 # Scan top 1k ports (brew install nmap)
+# masscanFast = sudo masscan -p1-65535 --rate=10000 # Scan all ports at 10k packets/sec (brew install masscan)
+# masscanWeb  = sudo masscan -p80,443,8080 --rate=5000 # Common web ports only (brew install masscan)
+# subfinder   = subfinder -silent -d [domain]     # Fast passive subdomain discovery (brew install subfinder)
+# amassEnum   = amass enum -passive -d [domain]   # Amass passive only (brew install amass)
+# assetfinder = assetfinder --subs-only [domain]  # Another passive subdomain tool (brew install assetfinder)
+# subenum     = Run amass, subfinder, assetfinder in sequence (see pentest.sh)
+# httpx       = httpx -silent -mc 200,201,204,301,302,307 # Probe for live hosts (go install projectdiscovery/httpx/cmd/httpx@latest)
+# aquatone    = aquatone -silent -out aquatone_report     # Screenshot all hosts from stdin (brew install aquatone)
+# ffuf        = ffuf -c -w [wordlist] -u [url]    # Fast content discovery (brew install ffuf)
+# gobusterdir = gobuster dir -u [url] -w [wordlist] # Directory brute force (brew install gobuster)
+# nikto       = nikto -h [url]                    # Web server scanner (brew install nikto)
+# sqlmap      = sqlmap -u [url] --batch           # SQL injection scanner (brew install sqlmap)
+# hydraSSH    = hydra -t 4 -L users.txt -P passwords.txt ssh:// # SSH brute force (brew install hydra)
+# johnRock    = john --wordlist=rockyou.txt [hashfile] # John with rockyou (brew install john)
+# hashcat0    = hashcat -m 0 -a 0 [hashfile] [wordlist] # Hashcat MD5 straight attack (brew install hashcat)
+# proxychains = proxychains4 [command]            # Run command through proxychains (brew install proxychains-ng)
+# wfuzz       = wfuzz -c -z file,[wordlist] -u [url] # Web fuzzing (brew install wfuzz)
+# cronenum    = curl -s https://crt.sh/?q=%.[domain] | grep '<TD>' | sed 's/<[^>]*>//g' # crt.sh subdomain search
+# jsfinder    = grep -R 'http.*\.js' -o [dir]    # Find JS references in a directory
+# burp        = open /Applications/BurpSuiteProfessional.app # Start Burp Suite (manual install)
+# w         = whois [domain]                  # Whois lookup (brew install whois)
+# d         = dig +short [domain]             # DNS lookup (brew install bind)
+# httpget   = http GET [url]                  # HTTP GET request (brew install httpie)
+# httppost  = http POST [url]                 # HTTP POST request (brew install httpie)
+# serve     = python3 -m http.server          # Quick web server (Python 3, built-in)
+# wgetc     = wget --continue [url]           # Continue download (brew install wget)
+# curlh     = curl -I [url]                   # HTTP headers (built-in curl)
+# md5       = md5sum [file] or md5 [file]     # MD5 hash (brew install coreutils or built-in)
+# xxd       = hexdump -C [file]               # Hexdump (built-in)
+# b64e      = base64 [file]                   # Base64 encode (built-in)
+# b64d      = base64 -d [file]                # Base64 decode (built-in)
+# portscan  = portscan [host]                 # Quick port scan 1-1024 (nc required)
+# revshell  = revshell [port]                 # Quick reverse shell listener (nc required)
+# phpsrv    = php -S 0.0.0.0:8000             # Quick PHP web server (brew install php)
+# serve2    = python -m SimpleHTTPServer      # Quick web server (Python 2)
+# nclisten  = ncat -lvnp [port]               # Ncat listener (brew install nmap)
+# hexview   = hexdump -C [file]               # Hex view of file (built-in)
+# sbin      = strings [file]                  # Extract printable strings from binary (built-in)
+# openports = lsof -i -P -n | grep LISTEN     # Show open ports (built-in lsof) 
